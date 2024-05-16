@@ -1,0 +1,62 @@
+// Frontend JavaScript
+
+// Function to send selected courses to the backend
+function saveSelectedCourses(selectedCourses) {
+  fetch('/save-courses', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ courses: selectedCourses })
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Failed to save courses');
+    }
+    // Handle success
+  })
+  .catch(error => {
+    console.error('Error saving courses:', error);
+  });
+}
+
+// Backend (Node.js + Express.js)
+
+const express = require('express');
+const bodyParser = require('body-parser');
+const app = express();
+const port = 3000;
+
+app.use(bodyParser.json());
+
+// Dummy authentication middleware
+function authenticate(req, res, next) {
+  // Check if user is logged in
+  // Implement your authentication logic here
+  const isLoggedIn = true; // Dummy logic, replace with actual authentication
+  if (isLoggedIn) {
+    next(); // Continue to the next middleware
+  } else {
+    res.status(401).send('Unauthorized');
+  }
+}
+
+// Route to save selected courses
+app.post('/save-courses', authenticate, (req, res) => {
+  const selectedCourses = req.body.courses;
+  // Store selected courses in the database
+  // Implement database logic here
+  res.sendStatus(200); // Send success response
+});
+
+// Route to display selected courses for a specific user
+app.get('/selected-courses', authenticate, (req, res) => {
+  // Retrieve selected courses for the logged-in user from the database
+  // Implement database logic here
+  const userCourses = []; // Replace with actual user course data
+  res.json(userCourses); // Send JSON response
+});
+
+app.listen(port, () => {
+  console.log(`Server listening at http://localhost:${port}`);
+});
